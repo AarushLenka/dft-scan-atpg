@@ -1,0 +1,30 @@
+# Simulator junk
+rtl/*.vvp
+rtl/*.vcd
+rtl/*.fst
+
+# Cadence run outputs (reports, netlists, logs, ATPG databases)
+p2_scan/runs/
+p2_atpg/runs/
+*.log
+# Modus rotates its transcript to modus.log1, modus.log2, ... in the CWD
+modus.log*
+modus.cmd*
+tbdata/
+p2_scan/top_atpg*/
+p2_scan/*.atpg
+p2_scan/*.pinassign
+
+# Genus byproducts: Modus hand-off, formal/verification dir, tool scratch files
+p2_scan/test_scripts/
+p2_scan/fv/
+.rs_*.tstamp
+*~
+
+# Curated reports ARE committed (report/), generated ones live in runs/ above.
+
+# Cell library (licensed PDK files, linked in on the server)
+lib/cells.lib
+lib/cells.v
+
+__pycache__/

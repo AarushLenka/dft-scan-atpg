@@ -1,0 +1,36 @@
+# -----------------------------------------------------------------------------
+# top.pinassign -- Modus pin assignment file (FULLSCAN testmode), single chain.
+#
+# The syntax below is copied from the file Genus 21.14 wrote itself during
+# `write_dft_atpg` (p2_scan/test_scripts/top.FULLSCAN.pinassign), so it is
+# verified against this install rather than guessed. Port names come from
+# p2_scan/runs/c1/scan_chains.rpt:
+#
+#   scan_in:  dft_sdi_1     scan_out: dft_sdo_1     SE, clk, length 129
+#
+# Test functions:
+#   +TC / -ES   test clock / excluded from shift-edges (clk is the single clock)
+#   +SE         shift enable (created by define_shift_enable, active high)
+#   +SC         scan control: held at its inactive value for the whole test
+#               (rst_n is active-low async reset, so it must stay HIGH)
+#   SI<n>       scan in,  channel n   (0-based channel index)
+#   SO<n>       scan out, channel n
+#
+# Note the two numbering schemes: the PORT suffix is 1-based (dft_sdi_1) while
+# the channel index in SI<n>/SO<n> is 0-based (SI0). For N chains the pairs are
+# dft_sdi_1/dft_sdo_1 -> SI0/SO0, dft_sdi_2/dft_sdo_2 -> SI1/SO1, ...
+# run_atpg.tcl generates this file per chain count into runs/c<N>/top.pinassign,
+# so this copy is the 1-chain reference -- read scan_chains.rpt, do not assume.
+# -----------------------------------------------------------------------------
+
+assign pin=rst_n       test_function= +SC;      # test_mode / inactive reset
+assign pin=SE          test_function= +SE;      # shift_enable
+assign pin=clk         test_function= -ES;      # test clock, excluded from shift
+
+assign pin=dft_sdi_1   test_function= SI0;      # scan chain 1 in
+assign pin=dft_sdo_1   test_function= SO0;      # scan chain 1 out
+
+# Everything else (wr_en, rd_en, wr_data, baud_div, rx) is left unassigned on
+# purpose: ATPG drives them as ordinary primary inputs. Tying them to constants
+# is a valid tightening once basic coverage works, e.g.
+#   assign pin=wr_en test_function= +TI;
